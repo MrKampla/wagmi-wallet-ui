@@ -1,0 +1,11 @@
+{
+  "SEND": "Send",
+  "DISCONNECT": "Disconnect",
+  "TOKENS": "Tokens",
+  "TOKEN": "Token",
+  "SELECT_TOKEN_TO_SEND": "Select token to send...",
+  "AMOUNT": "Amount",
+  "MAX": "Max",
+  "ENTER_VALID_WALLET": "Enter a valid wallet address",
+  "TO_ADDRESS": "To address"
+}
