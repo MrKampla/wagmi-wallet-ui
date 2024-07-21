@@ -16,23 +16,25 @@ In order to work wagmi-wallet-ui needs viem, wagmi (at least v2) and @tanstack/r
 
 ## Usage
 
-Setup `wagmi` and make sure to only use `WagmiWalletUI` inside `WagmiProvider` from `wagmi` and `QueryClientProvider` from `@tanstack/react-query`. `WagmiWalletUi` will automatically pick up context of your `wagmi` setup.
+1. Setup `wagmi` and make sure to only use `WagmiWalletUI` inside `WagmiProvider` from `wagmi` and `QueryClientProvider` from `@tanstack/react-query`. `WagmiWalletUi` will automatically pick up context of your `wagmi` setup.
 
-Only one prop is required: `tokens` which is an array of objects with following properties:
+2. Configure the wallet ui component with props. Only one prop is required: `tokens` which is an array of objects with following properties:
 
-```ts
-export type Token = {
-  name: string;
-  symbol: string;
-  address: string;
-  decimals: number;
-  img?: ReactNode | string;
-};
-```
+   ```ts
+   export type Token = {
+     name: string;
+     symbol: string;
+     address: string;
+     decimals: number;
+     img?: ReactNode | string;
+   };
+   ```
 
-This is the list of tokens that user can send. If you want to send native token, you can use `withNativeToken` prop.
+   This is the list of tokens that user can send. If you want to send native token, you can use `withNativeToken` prop.
 
-> Make sure to never render WagmiWalletUI if no wallet is connected. You can use `useAccount` hook from `wagmi` to check if user is connected by destructuring the `isConnected` property.
+   > Make sure to never render WagmiWalletUI if no wallet is connected. You can use `useAccount` hook from `wagmi` to check if user is connected by destructuring the `isConnected` property.
+
+3. Enjoy the wallet UI!
 
 ### Example with Rainbowkit connectors
 

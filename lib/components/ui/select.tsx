@@ -75,7 +75,7 @@ const SelectContent = React.forwardRef<
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        'ww-relative ww-z-50 ww-max-h-96 ww-min-w-[8rem] ww-overflow-hidden ww-rounded-md ww-border ww-bg-popover ww-text-popover-foreground ww-shadow-md data-[state=open]:ww-animate-in data-[state=closed]:ww-animate-out data-[state=closed]:ww-fade-out-0 data-[state=open]:ww-fade-in-0 data-[state=closed]:ww-zoom-out-95 data-[state=open]:ww-zoom-in-95 data-[side=bottom]:ww-slide-in-from-top-2 data-[side=left]:ww-slide-in-from-right-2 data-[side=right]:ww-slide-in-from-left-2 data-[side=top]:ww-slide-in-from-bottom-2',
+        'ww-relative ww-z-50 ww-max-h-96 ww-min-w-[8rem] ww-overflow-hidden ww-rounded-md ww-border ww-border-border ww-bg-popover ww-text-popover-foreground ww-shadow-md data-[state=open]:ww-animate-in data-[state=closed]:ww-animate-out data-[state=closed]:ww-fade-out-0 data-[state=open]:ww-fade-in-0 data-[state=closed]:ww-zoom-out-95 data-[state=open]:ww-zoom-in-95 data-[side=bottom]:ww-slide-in-from-top-2 data-[side=left]:ww-slide-in-from-right-2 data-[side=right]:ww-slide-in-from-left-2 data-[side=top]:ww-slide-in-from-bottom-2',
         position === 'popper' &&
           'data-[side=bottom]:ww-translate-y-1 data-[side=left]:ww--translate-x-1 data-[side=right]:ww-translate-x-1 data-[side=top]:ww--translate-y-1',
         className,
