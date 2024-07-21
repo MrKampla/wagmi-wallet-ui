@@ -84,15 +84,22 @@ const Wallet = () => {
           return { ..._txRequest, gas: 21_000n, chain: selectedChain! };
         }}
         onTxFail={error => {
-          toast.dismiss();
           toast.error(error.message);
         }}
         onTxSuccess={() => {
-          toast.dismiss();
           toast.success('ERC20 token sent!');
         }}
+        onTxSettle={() => {
+          toast.dismiss();
+        }}
+        onTxInclusion={receipt => {
+          toast.success(`Tx hash: ${receipt.transactionHash}`);
+        }}
         onChainSelectorClick={openChainModal}
+        onDisconnect={() => console.log('disconnecting')}
+        onCloseWalletUI={() => console.log('closing UI drawer')}
       >
+        {/* wallet ui trigger */}
         <Button>OPEN WALLET</Button>
       </WagmiWalletUI>
     </div>

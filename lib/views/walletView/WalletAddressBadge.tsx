@@ -6,8 +6,13 @@ import copyToClipboard from 'copy-to-clipboard';
 import { useAccount } from 'wagmi';
 
 const WalletAddressBadge = () => {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const [isCopied, setIsCopied] = useState(false);
+
+  if (!isConnected) {
+    return null;
+  }
+
   return (
     <Badge
       variant="secondary"

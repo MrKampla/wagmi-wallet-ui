@@ -32,7 +32,9 @@ export type Token = {
 
 This is the list of tokens that user can send. If you want to send native token, you can use `withNativeToken` prop.
 
-Example with Rainbowkit connetors:
+> Make sure to never render WagmiWalletUI if no wallet is connected. You can use `useAccount` hook from `wagmi` to check if user is connected by destructuring the `isConnected` property.
+
+### Example with Rainbowkit connectors
 
 ```tsx
 import '@rainbow-me/rainbowkit/styles.css';
@@ -124,25 +126,35 @@ const Wallet = () => {
           toast.loading(`Sending ${token.symbol}...`, {
             id: 'send-erc20-token',
           });
-
+          // you can modify txRequest here and override tx properties
           return { ..._txRequest, gas: 200_000n, chain: selectedChain! };
         }}
         onSendNativeToken={_txRequest => {
           toast.loading('Sending native token...', {
             id: 'send-native-token',
           });
+          // you can modify txRequest here and override tx properties
           return { ..._txRequest, gas: 21_000n, chain: selectedChain! };
         }}
         onTxFail={error => {
-          toast.dismiss();
           toast.error(error.message);
         }}
         onTxSuccess={() => {
-          toast.dismiss();
           toast.success('ERC20 token sent!');
         }}
+        onTxSettle={() => {
+          toast.dismiss();
+        }}
+        onTxInclusion={receipt => {
+          toast.success(`Tx hash: ${receipt.transactionHash}`);
+        }}
         onChainSelectorClick={openChainModal}
-      />
+        onDisconnect={() => console.log('disconnecting')}
+        onCloseWalletUI={() => console.log('closing UI drawer')}
+      >
+        {/* wallet ui trigger */}
+        <Button>OPEN WALLET</Button>
+      </WagmiWalletUI>
     </div>
   );
 };
