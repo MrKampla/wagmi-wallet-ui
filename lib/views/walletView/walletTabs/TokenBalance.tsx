@@ -1,5 +1,11 @@
 import { Token } from '@/types';
-import { useAccount, useBalance, useReadContract } from 'wagmi';
+import {
+  useAccount,
+  useBalance,
+  useChainId,
+  useChains,
+  useReadContract,
+} from 'wagmi';
 import * as viem from 'viem';
 import { DeleteIcon, LoaderIcon } from 'lucide-react';
 import { useContext } from 'react';
@@ -67,7 +73,10 @@ export const Erc20TokenBalance = ({ token }: { token: Token }) => {
 
 export const NativeTokenBalance = () => {
   const { nativeTokenImg } = useContext(WagmiWalletUiStore);
-  const { address, chain } = useAccount();
+  const { address } = useAccount();
+  const chains = useChains();
+  const chainId = useChainId();
+  const chain = chains.find(chain => chain.id === chainId);
 
   const { data: balance, isLoading } = useBalance({
     address,
