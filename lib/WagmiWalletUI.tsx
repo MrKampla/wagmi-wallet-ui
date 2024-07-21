@@ -8,6 +8,8 @@ import SendView from './views/sendView/SendView';
 import { WagmiWalletUiStore } from './store';
 import { WagmiWalletUIState, ReplaceReturnType } from './types';
 import { Optional } from '@tanstack/react-query';
+import AddTokenView from './views/addTokenView/AddTokenView';
+import { useCustomTokens } from './helpers/useCustomTokens';
 
 type Handlers = Pick<
   WagmiWalletUIState,
@@ -38,6 +40,7 @@ const WagmiWalletUI = ({
   withNativeToken,
   nativeTokenImg,
   translations,
+  customTokensStorageId,
   tokens = [],
   onCloseWalletUI,
   onDisconnect,
@@ -49,8 +52,10 @@ const WagmiWalletUI = ({
   onTxInclusion,
   onTxSettle,
 }: WagmiWalletUIProps) => {
-  const [currentView, setCurrentView] = useState<'wallet' | 'send'>('wallet');
+  const [currentView, setCurrentView] =
+    useState<Parameters<WagmiWalletUIState['setCurrentView']>[0]>('wallet');
   const { disconnect } = useDisconnect();
+  const { customTokens } = useCustomTokens();
 
   return (
     <WagmiWalletUiStore.Provider
@@ -59,7 +64,9 @@ const WagmiWalletUI = ({
         withNativeToken,
         nativeTokenImg,
         translations,
-        tokens,
+        customTokensStorageId:
+          customTokensStorageId || 'wagmi-wallet-ui-custom-tokens',
+        tokens: [...tokens, ...customTokens],
         setCurrentView,
         onCloseWalletUI,
         onDisconnect: () => {
@@ -89,6 +96,7 @@ const WagmiWalletUI = ({
           <DialogTitle />
           {currentView === 'wallet' && <WalletView />}
           {currentView === 'send' && <SendView />}
+          {currentView === 'add-token' && <AddTokenView />}
         </DrawerContent>
       </Drawer>
     </WagmiWalletUiStore.Provider>

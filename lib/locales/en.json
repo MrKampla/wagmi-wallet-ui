@@ -7,5 +7,12 @@
   "AMOUNT": "Amount",
   "MAX": "Max",
   "ENTER_VALID_WALLET": "Enter a valid wallet address",
-  "TO_ADDRESS": "To address"
+  "TO_ADDRESS": "To address",
+  "IMPORT_TOKENS": "Import tokens",
+  "REFRESH_LIST": "Refresh list",
+  "TOKEN_ADDRESS": "Token address",
+  "SYMBOL": "Symbol",
+  "PRECISION": "Precision",
+  "DECIMALS": "Decimals",
+  "ADD": "Add"
 }

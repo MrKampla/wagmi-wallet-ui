@@ -12,4 +12,7 @@ export default defineConfig({
   tsconfig: 'tsconfig.app.json',
   injectStyle: true,
   platform: 'browser',
+  banner: {
+    js: `"use client";`,
+  },
 });

@@ -6,6 +6,7 @@ export const WagmiWalletUiStore = createContext<WagmiWalletUIState>({
   isOpen: false,
   withNativeToken: false,
   nativeTokenImg: undefined,
+  customTokensStorageId: 'wagmi-wallet-ui-custom-tokens',
   tokens: [],
   setCurrentView: () => {},
   translations: en,

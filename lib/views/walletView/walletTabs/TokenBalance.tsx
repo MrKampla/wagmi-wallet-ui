@@ -1,36 +1,54 @@
 import { Token } from '@/types';
 import { useAccount, useBalance, useReadContract } from 'wagmi';
 import * as viem from 'viem';
-import { LoaderIcon } from 'lucide-react';
+import { DeleteIcon, LoaderIcon } from 'lucide-react';
 import { useContext } from 'react';
 import { WagmiWalletUiStore } from '@/store';
 import TokenIcon from '@/components/TokenIcon';
+import { Button } from '@/components/ui/button';
+import { useCustomTokens } from '@/helpers/useCustomTokens';
 
 const TokenBalance = ({
   token,
   balance,
   isLoading,
 }: {
-  token: Pick<Token, 'img' | 'name' | 'symbol' | 'decimals'>;
+  token: Pick<Token, 'img' | 'name' | 'symbol' | 'decimals' | 'address'>;
   balance: bigint | undefined;
   isLoading: boolean;
 }) => {
+  const { customTokens, removeCustomToken } = useCustomTokens();
+  const isCustomToken = customTokens.some(
+    customToken => customToken.address === token.address,
+  );
+
   return (
-    <div className="ww-w-full ww-flex ww-items-center ww-space-x-2 ww-bg-secondary ww-p-2 ww-px-4 ww-rounded-md">
-      <TokenIcon img={token.img} />
-      <div className="ww-ml-2 ww-min-w-fit">{token.name}</div>
-      <div className="ww-w-full ww-flex ww-justify-end">
-        {isLoading ? (
-          <LoaderIcon className="ww-animate-spin" />
-        ) : (
-          <div className="ww-flex ww-space-x-2">
-            <div className="ww-break-all ww-text-right ww-flex-wrap">
-              {viem.formatUnits(balance || 0n, token.decimals)}
+    <div className="ww-flex ww-items-center">
+      <div className="ww-w-full ww-flex ww-items-center ww-space-x-2 ww-bg-secondary ww-p-2 ww-px-4 ww-rounded-md">
+        <TokenIcon img={token.img} symbol={token.symbol} />
+        <div className="ww-ml-2 ww-min-w-fit">{token.name}</div>
+        <div className="ww-w-full ww-flex ww-justify-end">
+          {isLoading ? (
+            <LoaderIcon className="ww-animate-spin" />
+          ) : (
+            <div className="ww-flex ww-space-x-2">
+              <div className="ww-break-all ww-text-right ww-flex-wrap">
+                {viem.formatUnits(balance || 0n, token.decimals)}
+              </div>
+              <div>{token.symbol}</div>
             </div>
-            <div>{token.symbol}</div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
+      {isCustomToken && (
+        <Button
+          onClick={() => removeCustomToken(token.address)}
+          variant="destructive"
+          className="!ww-p-2 !ww-ml-2"
+        >
+          <DeleteIcon />
+        </Button>
+      )}
     </div>
   );
 };
@@ -62,6 +80,7 @@ export const NativeTokenBalance = () => {
         symbol: chain?.nativeCurrency.symbol!,
         decimals: chain?.nativeCurrency.decimals!,
         img: nativeTokenImg,
+        address: viem.zeroAddress,
       }}
       balance={balance?.value}
       isLoading={isLoading}

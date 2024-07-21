@@ -1,5 +1,3 @@
-'use client';
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -193,7 +191,7 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
                   {selectOptions.map(token => (
                     <SelectItem key={token.address} value={token.address}>
                       <div className="ww-flex ww-flex-row ww-items-center">
-                        <TokenIcon img={token.img} />
+                        <TokenIcon img={token.img} symbol={token.symbol} />
                         <div className="ww-ml-2">{token.name}</div>
                       </div>
                     </SelectItem>
