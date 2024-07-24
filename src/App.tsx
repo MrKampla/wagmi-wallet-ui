@@ -8,7 +8,7 @@ import { RainbowKitProvider, useChainModal } from '@rainbow-me/rainbowkit';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Toaster } from 'sonner';
 import { toast } from 'sonner';
-import { base } from 'viem/chains';
+import { base, polygon } from 'viem/chains';
 
 const queryClient = new QueryClient();
 
@@ -36,6 +36,7 @@ const Wallet = () => {
             name: 'USD Coin',
             symbol: 'USDC',
             img: 'https://etherscan.io/token/images/centre-usdc_28.png',
+            chainId: base.id,
           },
         ]
       : [
@@ -45,6 +46,7 @@ const Wallet = () => {
             name: 'USD Coin',
             symbol: 'USDC',
             img: 'https://etherscan.io/token/images/centre-usdc_28.png',
+            chainId: polygon.id,
           },
         ];
 
@@ -58,17 +60,26 @@ const Wallet = () => {
             : 'https://cdn-icons-png.freepik.com/512/12114/12114233.png'
         }
         // Override translations (example in Polish)
-        // translations={{
-        //   AMOUNT: 'Ilość',
-        //   DISCONNECT: 'Rozłącz',
-        //   MAX: 'MAX',
-        //   SEND: 'Wyślij',
-        //   SELECT_TOKEN_TO_SEND: 'Wybierz token do wysłania...',
-        //   TO_ADDRESS: 'Na adres',
-        //   TOKEN: 'Token',
-        //   TOKENS: 'Tokeny',
-        //   ENTER_VALID_WALLET: 'Wprowadź poprawny adres portfela',
-        // }}
+        translations={{
+          AMOUNT: 'Ilość',
+          DISCONNECT: 'Rozłącz',
+          MAX: 'MAX',
+          SEND: 'Wyślij',
+          SELECT_TOKEN_TO_SEND: 'Wybierz token do wysłania...',
+          TO_ADDRESS: 'Na adres',
+          TOKEN: 'Token',
+          TOKENS: 'Tokeny',
+          ENTER_VALID_WALLET: 'Wprowadź poprawny adres portfela',
+          ADD: 'Dodaj',
+          DECIMALS: 'Miejsca dziesiętne',
+          IMPORT_TOKENS: 'Importuj tokeny',
+          PRECISION: 'Precyzja',
+          SYMBOL: 'Symbol',
+          REFRESH_LIST: 'Odśwież listę',
+          TOKEN_ADDRESS: 'Adres tokena',
+          UNKNOWN_CHAIN: 'Nieznana sieć',
+          AMOUNT_EXCEEDS_BALANCE: 'Kwota przekracza saldo',
+        }}
         withNativeToken
         onSendErc20Token={(token, _txRequest) => {
           toast.loading(`Sending ${token.symbol}...`, {

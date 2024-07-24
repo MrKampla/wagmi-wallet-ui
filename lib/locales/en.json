@@ -14,5 +14,7 @@
   "SYMBOL": "Symbol",
   "PRECISION": "Precision",
   "DECIMALS": "Decimals",
-  "ADD": "Add"
+  "ADD": "Add",
+  "UNKNOWN_CHAIN": "Unknown chain",
+  "AMOUNT_EXCEEDS_BALANCE": "Amount exceeds balance"
 }

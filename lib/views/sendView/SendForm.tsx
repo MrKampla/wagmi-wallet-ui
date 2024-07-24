@@ -23,13 +23,14 @@ import {
 import { Token } from '@/types';
 import {
   useAccount,
+  useBalance,
   useChainId,
   useChains,
   usePrepareTransactionRequest,
   usePublicClient,
   useReadContract,
+  useSendTransaction,
   useSimulateContract,
-  useWalletClient,
   useWriteContract,
 } from 'wagmi';
 import { useContext } from 'react';
@@ -48,12 +49,17 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
     withNativeToken,
     nativeTokenImg,
     onSendNativeToken,
+    setCurrentView,
   } = useContext(WagmiWalletUiStore);
   const t = useTranslation();
   const { address } = useAccount();
   const chainId = useChainId();
   const chains = useChains();
   const selectedChain = chains.find(chain => chain.id === chainId);
+
+  const { data: nativeTokenBalance } = useBalance({
+    address,
+  });
 
   const FormSchema = z.object({
     token: z.string().min(1, {
@@ -74,7 +80,19 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
           message: t('ENTER_VALID_WALLET'),
         },
       ),
-    amount: z.string().min(1),
+    amount: z
+      .string()
+      .min(1)
+      .refine(
+        value =>
+          nativeTokenBalance?.value
+            ? viem.parseUnits(
+                value,
+                selectedChain?.nativeCurrency.decimals || 18,
+              ) <= nativeTokenBalance?.value
+            : true,
+        { message: t('AMOUNT_EXCEEDS_BALANCE') },
+      ),
   });
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -109,7 +127,8 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
       type: 'eip1559',
       account: address!,
     });
-  const { writeContractAsync: sendToken } = useWriteContract();
+  const { writeContractAsync: sendToken, isPending: isSendingErc20Token } =
+    useWriteContract();
 
   const {
     data: transactionRequest,
@@ -119,9 +138,10 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
     to: form.watch('targetAddress') as `0x${string}`,
     value: viem.parseUnits(form.watch('amount'), selectedToken?.decimals || 18),
   });
+  const { sendTransactionAsync, isPending: isSendingNativeToken } =
+    useSendTransaction();
 
   const publicClient = usePublicClient();
-  const { data: walletClient } = useWalletClient();
 
   async function onSubmit() {
     if (
@@ -134,9 +154,7 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
 
     try {
       const txHash = await (isNativeTransferSelected
-        ? walletClient!.sendTransaction(
-            await onSendNativeToken(transactionRequest!),
-          )
+        ? sendTransactionAsync(await onSendNativeToken(transactionRequest!))
         : sendToken(
             await onSendErc20Token(
               selectedToken!,
@@ -150,6 +168,7 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
         hash: txHash,
       });
       await onTxInclusion?.(receipt);
+      setCurrentView('wallet');
     } catch (error) {
       await onTxFail?.(error as Error);
     }
@@ -227,15 +246,25 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
                   type="button"
                   variant="ghost"
                   className="ww-ml-auto"
-                  onClick={() =>
-                    form.setValue(
-                      'amount',
-                      viem.formatUnits(
-                        tokenBalance || 0n,
-                        selectedToken?.decimals || 18,
-                      ),
-                    )
-                  }
+                  onClick={() => {
+                    if (isNativeTransferSelected) {
+                      form.setValue(
+                        'amount',
+                        viem.formatUnits(
+                          nativeTokenBalance?.value || 0n,
+                          nativeTokenBalance?.decimals || 18,
+                        ),
+                      );
+                    } else {
+                      form.setValue(
+                        'amount',
+                        viem.formatUnits(
+                          tokenBalance || 0n,
+                          selectedToken?.decimals || 18,
+                        ),
+                      );
+                    }
+                  }}
                 >
                   {t('MAX')}
                 </Button>
@@ -251,10 +280,15 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
           <div className="ww-w-full ww-text-destructive">
             {(error as any)?.cause?.shortMessage}
           </div>
-          <Button type="submit">
-            {(isNativeTransferSelected
+          <Button
+            disabled={isSendingErc20Token || isSendingNativeToken}
+            type="submit"
+          >
+            {((isNativeTransferSelected
               ? isLoadingTransactionRequest
-              : isLoadingTransferSimulation) && (
+              : isLoadingTransferSimulation) ||
+              isSendingErc20Token ||
+              isSendingNativeToken) && (
               <LoaderIcon className="ww-animate-spin ww-size-4 ww-mr-2" />
             )}
             {t('SEND')}

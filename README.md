@@ -90,6 +90,7 @@ const Wallet = () => {
             name: 'USD Coin',
             symbol: 'USDC',
             img: 'https://etherscan.io/token/images/centre-usdc_28.png',
+            chainId: 137,
           },
         ]
       : [
@@ -99,6 +100,7 @@ const Wallet = () => {
             name: 'USD Coin',
             symbol: 'USDC',
             img: 'https://etherscan.io/token/images/centre-usdc_28.png',
+            chainId: 8453,
           },
         ];
 
@@ -122,6 +124,15 @@ const Wallet = () => {
         //   TOKEN: 'Token',
         //   TOKENS: 'Tokeny',
         //   ENTER_VALID_WALLET: 'Wprowadź poprawny adres portfela',
+        //   ADD: 'Dodaj',
+        //   DECIMALS: 'Miejsca dziesiętne',
+        //   IMPORT_TOKENS: 'Importuj tokeny',
+        //   PRECISION: 'Precyzja',
+        //   SYMBOL: 'Symbol',
+        //   REFRESH_LIST: 'Odśwież listę',
+        //   TOKEN_ADDRESS: 'Adres tokena',
+        //   UNKNOWN_CHAIN: 'Nieznana sieć',
+        //   AMOUNT_EXCEEDS_BALANCE: 'Kwota przekracza saldo',
         // }}
         withNativeToken
         onSendErc20Token={(token, _txRequest) => {

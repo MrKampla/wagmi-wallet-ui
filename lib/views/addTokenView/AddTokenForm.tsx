@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import * as viem from 'viem';
-import { useReadContract } from 'wagmi';
+import { useChainId, useReadContract } from 'wagmi';
 import { useContext, useEffect } from 'react';
 import { useTranslation } from '@/helpers/useTranslation';
 import { LoaderIcon } from 'lucide-react';
@@ -23,6 +23,7 @@ import { useCustomTokens } from '@/helpers/useCustomTokens';
 export function AddTokenForm() {
   const { setCurrentView } = useContext(WagmiWalletUiStore);
   const { addCustomToken } = useCustomTokens();
+  const chainId = useChainId();
 
   const t = useTranslation();
 
@@ -105,6 +106,7 @@ export function AddTokenForm() {
       decimals: values.precision,
       name: tokenName || values.symbol,
       img: '',
+      chainId,
     });
     setCurrentView('wallet');
   }
