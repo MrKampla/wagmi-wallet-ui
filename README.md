@@ -1,6 +1,6 @@
 # Wagmi Wallet UI
 
-Fully customizable wallet UI for Wagmi Wallet.
+Fully customizable wallet UI for Wagmi dapps.
 
 If you have native account abstraction built into your dapp, you can use this wallet UI to allow users to interact with their funds stored on integrated wallets.
 
