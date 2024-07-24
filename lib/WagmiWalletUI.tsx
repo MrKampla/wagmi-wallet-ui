@@ -6,8 +6,7 @@ import { Drawer, DrawerContent, DrawerTrigger } from './components/ui/drawer';
 import WalletView from './views/walletView/WalletView';
 import SendView from './views/sendView/SendView';
 import { WagmiWalletUiStore } from './store';
-import { WagmiWalletUIState, ReplaceReturnType } from './types';
-import { Optional } from '@tanstack/react-query';
+import { WagmiWalletUIState, ReplaceReturnType, OptionalKeys } from './types';
 import AddTokenView from './views/addTokenView/AddTokenView';
 import { useCustomTokens } from './helpers/useCustomTokens';
 
@@ -23,7 +22,7 @@ export type WagmiWalletUIProps = PropsWithChildren &
   > &
   // make handlers optional and allow them to return void or modified txRequest
   Partial<
-    Optional<
+    OptionalKeys<
       {
         [Property in keyof Handlers]: ReplaceReturnType<
           Handlers[Property],

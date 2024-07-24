@@ -49,3 +49,21 @@ export type WagmiWalletUIState = {
 export type ReplaceReturnType<T extends (...a: any) => any, TNewReturn> = (
   ...a: Parameters<T>
 ) => TNewReturn;
+
+type OmitKeyof<
+  TObject,
+  TKey extends TStrictly extends 'safely'
+    ?
+        | keyof TObject
+        | (string & Record<never, never>)
+        | (number & Record<never, never>)
+        | (symbol & Record<never, never>)
+    : keyof TObject,
+  TStrictly extends 'strictly' | 'safely' = 'strictly',
+> = Omit<TObject, TKey>;
+
+export type OptionalKeys<TTarget, TKey extends keyof TTarget> = Pick<
+  Partial<TTarget>,
+  TKey
+> &
+  OmitKeyof<TTarget, TKey>;
