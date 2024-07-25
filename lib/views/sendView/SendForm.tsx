@@ -33,7 +33,7 @@ import {
   useSimulateContract,
   useWriteContract,
 } from 'wagmi';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { WagmiWalletUiStore } from '@/store';
 import { LoaderIcon } from 'lucide-react';
 import TokenIcon from '@/components/TokenIcon';
@@ -107,6 +107,15 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
   const tokenAddress = form.watch('token');
   const isNativeTransferSelected = tokenAddress === viem.zeroAddress;
   const selectedToken = tokens.find(token => token.address === tokenAddress);
+
+  useEffect(
+    function setErrorOnFormForSmartAccounts() {
+      if (isNativeTransferSelected && nativeTokenBalance?.value === 0n) {
+        form.setError('amount', { message: t('AMOUNT_EXCEEDS_BALANCE') });
+      }
+    },
+    [isNativeTransferSelected],
+  );
 
   const { data: tokenBalance } = useReadContract({
     abi: viem.erc20Abi,
@@ -281,7 +290,11 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
             {(error as any)?.cause?.shortMessage}
           </div>
           <Button
-            disabled={isSendingErc20Token || isSendingNativeToken}
+            disabled={
+              isSendingErc20Token ||
+              isSendingNativeToken ||
+              !!Object.keys(form.formState.errors).length
+            }
             type="submit"
           >
             {((isNativeTransferSelected
