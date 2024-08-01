@@ -20,11 +20,11 @@ const WalletView = () => {
     <div className="ww-overflow-auto sm:ww-container ww-h-full ww-flex ww-flex-col">
       <DrawerHeader className="!ww-flex ww-flex-row ww-justify-between">
         <ChainBadge />
-        <Button onClick={onCloseWalletUI} variant="ghost">
-          <DrawerClose asChild className="ww-w-fit ww-size-fit">
+        <DrawerClose asChild className="ww-w-fit ww-size-fit">
+          <Button onClick={onCloseWalletUI} variant="ghost">
             <XIcon />
-          </DrawerClose>
-        </Button>
+          </Button>
+        </DrawerClose>
       </DrawerHeader>
 
       <div className="ww-p-4">

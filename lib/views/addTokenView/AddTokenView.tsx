@@ -13,11 +13,11 @@ const AddTokenView = () => {
         <Button variant="ghost" onClick={() => setCurrentView('wallet')}>
           <ArrowLeftIcon className="ww-size-6" />
         </Button>
-        <Button onClick={onCloseWalletUI} variant="ghost">
-          <DrawerClose asChild className="ww-w-fit ww-size-fit">
+        <DrawerClose className="ww-w-fit ww-size-fit">
+          <Button onClick={onCloseWalletUI} variant="ghost">
             <XIcon />
-          </DrawerClose>
-        </Button>
+          </Button>
+        </DrawerClose>
       </DrawerHeader>
 
       <div className="ww-p-4">

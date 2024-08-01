@@ -5,3 +5,12 @@ body {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  * {
+    @apply ww-border-border;
+  }
+  body {
+    @apply ww-bg-background ww-text-foreground;
+  }
+}
