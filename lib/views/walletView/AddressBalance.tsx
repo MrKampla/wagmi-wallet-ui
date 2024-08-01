@@ -13,9 +13,7 @@ const AddressBalance = () => {
         <LoaderIcon className="ww-animate-spin ww-size-8 ww-mt-2" />
       ) : (
         <>
-          <div>
-            {viem.formatUnits(balance?.value || 0n, balance?.decimals || 18)}{' '}
-          </div>
+          <div>{viem.formatUnits(balance?.value || 0n, balance?.decimals || 18)} </div>
           <div>{balance?.symbol}</div>
         </>
       )}

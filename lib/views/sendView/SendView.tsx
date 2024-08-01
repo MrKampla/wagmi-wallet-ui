@@ -6,8 +6,7 @@ import { useContext } from 'react';
 import { SendForm } from './SendForm';
 
 const SendView = () => {
-  const { tokens, setCurrentView, onCloseWalletUI } =
-    useContext(WagmiWalletUiStore);
+  const { tokens, setCurrentView, onCloseWalletUI } = useContext(WagmiWalletUiStore);
   return (
     <div className="ww-overflow-auto sm:ww-container">
       <DrawerHeader className="!ww-flex ww-flex-row ww-justify-between">

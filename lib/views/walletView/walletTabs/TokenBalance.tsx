@@ -1,11 +1,5 @@
 import { Token } from '@/types';
-import {
-  useAccount,
-  useBalance,
-  useChainId,
-  useChains,
-  useReadContract,
-} from 'wagmi';
+import { useAccount, useBalance, useChainId, useChains, useReadContract } from 'wagmi';
 import * as viem from 'viem';
 import { DeleteIcon, LoaderIcon } from 'lucide-react';
 import { useContext } from 'react';

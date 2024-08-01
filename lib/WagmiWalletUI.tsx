@@ -10,16 +10,10 @@ import { WagmiWalletUIState, ReplaceReturnType, OptionalKeys } from './types';
 import AddTokenView from './views/addTokenView/AddTokenView';
 import { useCustomTokens } from './helpers/useCustomTokens';
 
-type Handlers = Pick<
-  WagmiWalletUIState,
-  'onSendErc20Token' | 'onSendNativeToken'
->;
+type Handlers = Pick<WagmiWalletUIState, 'onSendErc20Token' | 'onSendNativeToken'>;
 
 export type WagmiWalletUIProps = PropsWithChildren &
-  Omit<
-    WagmiWalletUIState,
-    'setCurrentView' | 'onSendErc20Token' | 'onSendNativeToken'
-  > &
+  Omit<WagmiWalletUIState, 'setCurrentView' | 'onSendErc20Token' | 'onSendNativeToken'> &
   // make handlers optional and allow them to return void or modified txRequest
   Partial<
     OptionalKeys<
@@ -63,8 +57,7 @@ const WagmiWalletUI = ({
         withNativeToken,
         nativeTokenImg,
         translations,
-        customTokensStorageId:
-          customTokensStorageId || 'wagmi-wallet-ui-custom-tokens',
+        customTokensStorageId: customTokensStorageId || 'wagmi-wallet-ui-custom-tokens',
         tokens: [...tokens, ...customTokens],
         setCurrentView,
         onCloseWalletUI,

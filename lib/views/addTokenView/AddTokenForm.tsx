@@ -58,25 +58,23 @@ export function AddTokenForm() {
 
   const tokenAddress = form.watch('address');
 
-  const { data: tokenSymbol, isLoading: isLoadingTokenSymbol } =
-    useReadContract({
-      abi: viem.erc20Abi,
-      address: tokenAddress as `0x${string}`,
-      functionName: 'symbol',
-      query: {
-        enabled: viem.isAddress(tokenAddress, { strict: false }),
-      },
-    });
+  const { data: tokenSymbol, isLoading: isLoadingTokenSymbol } = useReadContract({
+    abi: viem.erc20Abi,
+    address: tokenAddress as `0x${string}`,
+    functionName: 'symbol',
+    query: {
+      enabled: viem.isAddress(tokenAddress, { strict: false }),
+    },
+  });
 
-  const { data: tokenDecimals, isLoading: isLoadingTokenDecimals } =
-    useReadContract({
-      abi: viem.erc20Abi,
-      address: tokenAddress as `0x${string}`,
-      functionName: 'decimals',
-      query: {
-        enabled: viem.isAddress(tokenAddress, { strict: false }),
-      },
-    });
+  const { data: tokenDecimals, isLoading: isLoadingTokenDecimals } = useReadContract({
+    abi: viem.erc20Abi,
+    address: tokenAddress as `0x${string}`,
+    functionName: 'decimals',
+    query: {
+      enabled: viem.isAddress(tokenAddress, { strict: false }),
+    },
+  });
 
   const { data: tokenName } = useReadContract({
     abi: viem.erc20Abi,

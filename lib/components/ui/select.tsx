@@ -64,8 +64,7 @@ const SelectScrollDownButton = React.forwardRef<
     <ChevronDown className="ww-h-4 ww-w-4" />
   </SelectPrimitive.ScrollDownButton>
 ));
-SelectScrollDownButton.displayName =
-  SelectPrimitive.ScrollDownButton.displayName;
+SelectScrollDownButton.displayName = SelectPrimitive.ScrollDownButton.displayName;
 
 const SelectContent = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
@@ -105,10 +104,7 @@ const SelectLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.Label
     ref={ref}
-    className={cn(
-      'ww-py-1.5 ww-pl-8 ww-pr-2 ww-text-sm ww-font-semibold',
-      className,
-    )}
+    className={cn('ww-py-1.5 ww-pl-8 ww-pr-2 ww-text-sm ww-font-semibold', className)}
     {...props}
   />
 ));

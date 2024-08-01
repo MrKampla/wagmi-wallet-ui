@@ -1,8 +1,5 @@
 import { ReactNode } from 'react';
-import {
-  SendTransactionParameters,
-  WaitForTransactionReceiptReturnType,
-} from 'viem';
+import { SendTransactionParameters, WaitForTransactionReceiptReturnType } from 'viem';
 import { UseWriteContractReturnType } from 'wagmi';
 import { Translations } from './helpers/useTranslation';
 
@@ -40,9 +37,7 @@ export type WagmiWalletUIState = {
   ) => SendTransactionParameters | Promise<SendTransactionParameters>;
   onTxFail?: (error: Error) => void | Promise<void>;
   onTxSuccess?: (txHash: string) => void | Promise<void>;
-  onTxInclusion?: (
-    response: WaitForTransactionReceiptReturnType,
-  ) => void | Promise<void>;
+  onTxInclusion?: (response: WaitForTransactionReceiptReturnType) => void | Promise<void>;
   onTxSettle?: () => void | Promise<void>;
 };
 

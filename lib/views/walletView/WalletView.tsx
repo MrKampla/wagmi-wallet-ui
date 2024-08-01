@@ -48,11 +48,7 @@ const WalletView = () => {
           <PlusIcon className="ww-mr-2" />
           {t('IMPORT_TOKENS')}
         </Button>
-        <Button
-          onClick={() => refetchQueries()}
-          variant="ghost"
-          className="ww-w-fit"
-        >
+        <Button onClick={() => refetchQueries()} variant="ghost" className="ww-w-fit">
           <RefreshCwIcon
             className={cn('ww-mr-2', {
               'ww-animate-spin': isFetching,

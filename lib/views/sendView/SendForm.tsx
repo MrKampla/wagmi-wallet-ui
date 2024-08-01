@@ -80,19 +80,7 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
           message: t('ENTER_VALID_WALLET'),
         },
       ),
-    amount: z
-      .string()
-      .min(1)
-      .refine(
-        value =>
-          nativeTokenBalance?.value
-            ? viem.parseUnits(
-                value,
-                selectedChain?.nativeCurrency.decimals || 18,
-              ) <= nativeTokenBalance?.value
-            : true,
-        { message: t('AMOUNT_EXCEEDS_BALANCE') },
-      ),
+    amount: z.string().min(1),
   });
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -107,15 +95,6 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
   const tokenAddress = form.watch('token');
   const isNativeTransferSelected = tokenAddress === viem.zeroAddress;
   const selectedToken = tokens.find(token => token.address === tokenAddress);
-
-  useEffect(
-    function setErrorOnFormForSmartAccounts() {
-      if (isNativeTransferSelected && nativeTokenBalance?.value === 0n) {
-        form.setError('amount', { message: t('AMOUNT_EXCEEDS_BALANCE') });
-      }
-    },
-    [isNativeTransferSelected],
-  );
 
   const { data: tokenBalance } = useReadContract({
     abi: viem.erc20Abi,
@@ -136,7 +115,7 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
       type: 'eip1559',
       account: address!,
     });
-  const { writeContractAsync: sendToken, isPending: isSendingErc20Token } =
+  const { writeContractAsync: sendTokenAsync, isPending: isSendingErc20Token } =
     useWriteContract();
 
   const {
@@ -147,28 +126,20 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
     to: form.watch('targetAddress') as `0x${string}`,
     value: viem.parseUnits(form.watch('amount'), selectedToken?.decimals || 18),
   });
-  const { sendTransactionAsync, isPending: isSendingNativeToken } =
-    useSendTransaction();
+  const { sendTransactionAsync, isPending: isSendingNativeToken } = useSendTransaction();
 
   const publicClient = usePublicClient();
 
   async function onSubmit() {
-    if (
-      isNativeTransferSelected
-        ? !transactionRequest
-        : !transferSimulation?.request
-    ) {
+    if (isNativeTransferSelected ? !transactionRequest : !transferSimulation?.request) {
       return;
     }
 
     try {
       const txHash = await (isNativeTransferSelected
         ? sendTransactionAsync(await onSendNativeToken(transactionRequest!))
-        : sendToken(
-            await onSendErc20Token(
-              selectedToken!,
-              transferSimulation?.request!,
-            ),
+        : sendTokenAsync(
+            await onSendErc20Token(selectedToken!, transferSimulation?.request!),
           ));
 
       await onTxSuccess?.(txHash);
@@ -196,6 +167,55 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
         ...tokens,
       ]
     : tokens;
+
+  useEffect(
+    function setErrorOnFormForSmartAccounts() {
+      console.log;
+      if (isNativeTransferSelected) {
+        const currentNativeTokenBalance = nativeTokenBalance?.value || 0n;
+        const selectedAmount = viem.parseUnits(
+          form.watch('amount'),
+          selectedToken?.decimals || 18,
+        );
+        if (
+          currentNativeTokenBalance === 0n ||
+          selectedAmount > currentNativeTokenBalance
+        ) {
+          form.setError('amount', {
+            message: t('AMOUNT_EXCEEDS_BALANCE'),
+          });
+        }
+        if (currentNativeTokenBalance >= selectedAmount) {
+          form.clearErrors('amount');
+        }
+      } else {
+        if (!selectedToken) {
+          form.clearErrors('amount');
+          return;
+        }
+        const currentTokenBalance = tokenBalance || 0n;
+        const selectedAmount = viem.parseUnits(
+          form.watch('amount'),
+          selectedToken?.decimals || 18,
+        );
+        if (currentTokenBalance === 0n || selectedAmount > currentTokenBalance) {
+          form.setError('amount', {
+            message: t('AMOUNT_EXCEEDS_BALANCE'),
+          });
+        }
+        if (currentTokenBalance >= selectedAmount) {
+          form.clearErrors('amount');
+        }
+      }
+    },
+    [
+      isNativeTransferSelected,
+      form.watch('amount'),
+      nativeTokenBalance?.value,
+      selectedToken?.decimals,
+      tokenBalance,
+    ],
+  );
 
   return (
     <Form {...form}>
@@ -256,23 +276,17 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
                   variant="ghost"
                   className="ww-ml-auto"
                   onClick={() => {
-                    if (isNativeTransferSelected) {
-                      form.setValue(
-                        'amount',
-                        viem.formatUnits(
-                          nativeTokenBalance?.value || 0n,
-                          nativeTokenBalance?.decimals || 18,
-                        ),
-                      );
-                    } else {
-                      form.setValue(
-                        'amount',
-                        viem.formatUnits(
-                          tokenBalance || 0n,
-                          selectedToken?.decimals || 18,
-                        ),
-                      );
-                    }
+                    form.setValue(
+                      'amount',
+                      viem.formatUnits(
+                        isNativeTransferSelected
+                          ? nativeTokenBalance?.value || 0n
+                          : tokenBalance || 0n,
+                        isNativeTransferSelected
+                          ? nativeTokenBalance?.decimals || 18
+                          : selectedToken?.decimals || 18,
+                      ),
+                    );
                   }}
                 >
                   {t('MAX')}

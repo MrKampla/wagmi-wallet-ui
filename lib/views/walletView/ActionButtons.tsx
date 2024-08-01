@@ -11,10 +11,7 @@ const ActionButtons = () => {
   return (
     <div className="ww-flex ww-mt-8 ww-justify-center ww-space-x-4">
       <div className="ww-flex ww-flex-col ww-items-center">
-        <Button
-          className="ww-h-14 ww-w-14"
-          onClick={() => setCurrentView('send')}
-        >
+        <Button className="ww-h-14 ww-w-14" onClick={() => setCurrentView('send')}>
           <SendIcon className="ww-size-6" />
         </Button>
         <div>{t('SEND')}</div>
