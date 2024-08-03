@@ -12,12 +12,24 @@ export type Token = {
   img?: ReactNode | string;
 };
 
+export type Activity = {
+  date: Date;
+  type: 'send' | 'receive' | 'contract-interaction';
+  chainId: number;
+  status: 'pending' | 'success' | 'fail';
+  title: string;
+  amount: bigint;
+  token: Pick<Token, 'symbol' | 'decimals'>;
+  txLink?: string;
+};
+
 export type WagmiWalletUIState = {
   isOpen?: boolean;
   withNativeToken?: boolean;
   nativeTokenImg?: React.ReactNode | string;
   customTokensStorageId?: string;
   tokens: Token[];
+  activities?: Activity[];
   // views
   setCurrentView: (view: 'wallet' | 'send' | 'add-token') => void;
   onCloseWalletUI?: () => void;

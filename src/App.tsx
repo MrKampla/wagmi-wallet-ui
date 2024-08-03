@@ -54,6 +54,58 @@ const Wallet = () => {
     <div className="ww-w-full ww-flex ww-h-screen ww-justify-center ww-items-center">
       <WagmiWalletUI
         tokens={tokens}
+        activities={[
+          {
+            amount: 100_000000n,
+            chainId: selectedChain?.id!,
+            date: new Date(),
+            status: 'success',
+            title: 'Send USDC',
+            token: {
+              symbol: 'USDC',
+              decimals: 6,
+            },
+            type: 'send',
+            txLink:
+              'https://polygonscan.com/tx/0xe551d3b7836e914f040542be37a8a7732c16a911eed2e9fff9113d7ae6233b78',
+          },
+          {
+            amount: 50_000000n,
+            chainId: selectedChain?.id!,
+            date: new Date('2021-10-10'),
+            status: 'fail',
+            title: 'Receive USDC',
+            token: {
+              symbol: 'USDC',
+              decimals: 6,
+            },
+            type: 'receive',
+          },
+          {
+            amount: 0n,
+            chainId: selectedChain?.id!,
+            date: new Date('2023-03-2 2:00:00'),
+            status: 'pending',
+            title: 'Stake ETH',
+            token: {
+              symbol: 'ETH',
+              decimals: 18,
+            },
+            type: 'contract-interaction',
+          },
+          {
+            amount: 1000000000000000n,
+            chainId: selectedChain?.id!,
+            date: new Date('2023-03-2 12:00:00'),
+            status: 'success',
+            title: 'Stake ETH',
+            token: {
+              symbol: 'ETH',
+              decimals: 18,
+            },
+            type: 'contract-interaction',
+          },
+        ]}
         nativeTokenImg={
           selectedChain?.id === base.id
             ? 'https://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/256/Ethereum-ETH-icon.png'
@@ -79,6 +131,10 @@ const Wallet = () => {
           TOKEN_ADDRESS: 'Adres tokena',
           UNKNOWN_CHAIN: 'Nieznana sieć',
           AMOUNT_EXCEEDS_BALANCE: 'Kwota przekracza saldo',
+          ACTIVITY: 'Aktywność',
+          FAIL: 'Niepowodzenie',
+          PENDING: 'Oczekiwanie',
+          SUCCESS: 'Potwierdzone',
         }}
         withNativeToken
         onSendErc20Token={(token, _txRequest) => {

@@ -16,5 +16,9 @@
   "DECIMALS": "Decimals",
   "ADD": "Add",
   "UNKNOWN_CHAIN": "Unknown chain",
-  "AMOUNT_EXCEEDS_BALANCE": "Amount exceeds balance"
+  "AMOUNT_EXCEEDS_BALANCE": "Amount exceeds balance",
+  "ACTIVITY": "Activity",
+  "PENDING": "Pending",
+  "SUCCESS": "Success",
+  "FAIL": "Failed"
 }

@@ -35,6 +35,7 @@ const WagmiWalletUI = ({
   translations,
   customTokensStorageId,
   tokens = [],
+  activities = [],
   onCloseWalletUI,
   onDisconnect,
   onChainSelectorClick,
@@ -59,6 +60,7 @@ const WagmiWalletUI = ({
         translations,
         customTokensStorageId: customTokensStorageId || 'wagmi-wallet-ui-custom-tokens',
         tokens: [...tokens, ...customTokens],
+        activities,
         setCurrentView,
         onCloseWalletUI,
         onDisconnect: () => {
