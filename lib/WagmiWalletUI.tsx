@@ -36,6 +36,7 @@ const WagmiWalletUI = ({
   customTokensStorageId,
   tokens = [],
   activities = [],
+  infoComponent,
   onCloseWalletUI,
   onDisconnect,
   onChainSelectorClick,
@@ -59,8 +60,13 @@ const WagmiWalletUI = ({
         nativeTokenImg,
         translations,
         customTokensStorageId: customTokensStorageId || 'wagmi-wallet-ui-custom-tokens',
-        tokens: [...tokens, ...customTokens],
+        tokens: [...tokens, ...customTokens].filter(
+          // filter out duplicates
+          (token, i, allTokens) =>
+            allTokens.findIndex(t => t.address === token.address) === i,
+        ),
         activities,
+        infoComponent,
         setCurrentView,
         onCloseWalletUI,
         onDisconnect: () => {

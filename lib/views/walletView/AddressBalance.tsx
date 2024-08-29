@@ -1,6 +1,7 @@
 import * as viem from 'viem';
 import { LoaderIcon } from 'lucide-react';
 import { useAccount, useBalance } from 'wagmi';
+import { truncateDecimalPlaces } from '@/helpers/truncateDecimalPlaces';
 
 const AddressBalance = () => {
   const { address } = useAccount();
@@ -13,7 +14,11 @@ const AddressBalance = () => {
         <LoaderIcon className="ww-animate-spin ww-size-8 ww-mt-2" />
       ) : (
         <>
-          <div>{viem.formatUnits(balance?.value || 0n, balance?.decimals || 18)} </div>
+          <div>
+            {truncateDecimalPlaces(
+              viem.formatUnits(balance?.value || 0n, balance?.decimals || 18),
+            )}
+          </div>
           <div>{balance?.symbol}</div>
         </>
       )}

@@ -13,7 +13,8 @@ import { useRefetchQueries } from '@/helpers/useRefetchQueries';
 import { cn } from '@/lib/utils';
 
 const WalletView = () => {
-  const { onCloseWalletUI, setCurrentView } = useContext(WagmiWalletUiStore);
+  const { onCloseWalletUI, setCurrentView, infoComponent } =
+    useContext(WagmiWalletUiStore);
   const { refetchQueries, isFetching } = useRefetchQueries();
   const t = useTranslation();
   return (
@@ -34,6 +35,8 @@ const WalletView = () => {
           <AddressBalance />
 
           <ActionButtons />
+
+          {infoComponent}
         </div>
 
         <WalletTabs />

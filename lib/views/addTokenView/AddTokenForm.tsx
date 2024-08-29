@@ -13,16 +13,27 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import * as viem from 'viem';
-import { useChainId, useReadContract } from 'wagmi';
-import { useContext, useEffect } from 'react';
+import { useChainId, usePublicClient, useReadContract } from 'wagmi';
+import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from '@/helpers/useTranslation';
 import { LoaderIcon } from 'lucide-react';
 import { WagmiWalletUiStore } from '@/store';
 import { useCustomTokens } from '@/helpers/useCustomTokens';
 
+class FormError extends Error {
+  constructor(
+    public fieldName: string,
+    public errorMessage: string,
+  ) {
+    super(errorMessage);
+  }
+}
+
 export function AddTokenForm() {
-  const { setCurrentView } = useContext(WagmiWalletUiStore);
-  const { addCustomToken } = useCustomTokens();
+  const [isAddingToken, setIsAddingToken] = useState(false);
+  const { setCurrentView, tokens } = useContext(WagmiWalletUiStore);
+  const { addCustomToken, customTokens } = useCustomTokens();
+  const publicClient = usePublicClient();
   const chainId = useChainId();
 
   const t = useTranslation();
@@ -31,7 +42,7 @@ export function AddTokenForm() {
     address: z
       .string()
       .length(42, {
-        message: t('ENTER_VALID_WALLET'),
+        message: t('ENTER_VALID_TOKEN_ADDRESS'),
       })
       .refine(
         value =>
@@ -40,7 +51,7 @@ export function AddTokenForm() {
             strict: false,
           }),
         {
-          message: t('ENTER_VALID_WALLET'),
+          message: t('ENTER_VALID_TOKEN_ADDRESS'),
         },
       ),
     symbol: z.string().min(1),
@@ -98,15 +109,42 @@ export function AddTokenForm() {
   );
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    addCustomToken({
-      address: values.address,
-      symbol: values.symbol,
-      decimals: values.precision,
-      name: tokenName || values.symbol,
-      img: '',
-      chainId,
-    });
-    setCurrentView('wallet');
+    setIsAddingToken(true);
+    try {
+      if (
+        [...tokens, ...customTokens].some(
+          token => token.address.toLowerCase() === values.address.toLowerCase(),
+        )
+      ) {
+        throw new FormError('address', t('TOKEN_ALREADY_ADDED'));
+      }
+
+      await publicClient?.readContract({
+        abi: viem.erc20Abi,
+        address: values.address as `0x${string}`,
+        functionName: 'name',
+      });
+
+      addCustomToken({
+        address: values.address,
+        symbol: values.symbol,
+        decimals: values.precision,
+        name: tokenName || values.symbol,
+        img: '',
+        chainId,
+      });
+      setCurrentView('wallet');
+    } catch (error) {
+      if (error instanceof FormError) {
+        form.setError(error.fieldName as any, { message: error.message });
+      }
+      if (error instanceof viem.BaseError) {
+        console.log(error);
+        form.setError('address', { message: t('ADDRESS_NOT_A_TOKEN') });
+      }
+    } finally {
+      setIsAddingToken(false);
+    }
   }
 
   return (
@@ -165,7 +203,12 @@ export function AddTokenForm() {
           )}
         />
         <div className="ww-flex ww-justify-end">
-          <Button type="submit">{t('ADD')}</Button>
+          <Button type="submit">
+            {isAddingToken && (
+              <LoaderIcon className="ww-animate-spin ww-size-4 ww-mr-2" />
+            )}
+            {t('ADD')}
+          </Button>
         </div>
       </form>
     </Form>

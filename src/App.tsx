@@ -9,6 +9,8 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Toaster } from 'sonner';
 import { toast } from 'sonner';
 import { base, polygon } from 'viem/chains';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { CircleHelpIcon } from 'lucide-react';
 
 const queryClient = new QueryClient();
 
@@ -54,6 +56,18 @@ const Wallet = () => {
     <div className="ww-w-full ww-flex ww-h-screen ww-justify-center ww-items-center">
       <WagmiWalletUI
         tokens={tokens}
+        infoComponent={
+          <Alert className="ww-mt-10 ww-flex">
+            <CircleHelpIcon className="ww-mr-4 ww-my-auto" />
+            <div>
+              <AlertTitle>Do I need native token?</AlertTitle>
+              <AlertDescription>
+                This wallet works with account abstraction so if it is properly set up,
+                you don't!
+              </AlertDescription>
+            </div>
+          </Alert>
+        }
         activities={[
           {
             amount: 100_000000n,
@@ -135,6 +149,10 @@ const Wallet = () => {
           FAIL: 'Niepowodzenie',
           PENDING: 'Oczekiwanie',
           SUCCESS: 'Potwierdzone',
+          TOKEN_ALREADY_ADDED: 'Token już został dodany',
+          ENTER_VALID_TOKEN_ADDRESS: 'Wprowadź poprawny adres tokena',
+          ADDRESS_NOT_A_TOKEN: 'Adres nie jest tokenem',
+          INVALID_AMOUNT: 'Niepoprawna kwota',
         }}
         withNativeToken
         onSendErc20Token={(token, _txRequest) => {

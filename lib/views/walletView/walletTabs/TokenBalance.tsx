@@ -7,6 +7,7 @@ import { WagmiWalletUiStore } from '@/store';
 import TokenIcon from '@/components/TokenIcon';
 import { Button } from '@/components/ui/button';
 import { useCustomTokens } from '@/helpers/useCustomTokens';
+import { truncateDecimalPlaces } from '@/helpers/truncateDecimalPlaces';
 
 const TokenBalance = ({
   token,
@@ -33,7 +34,7 @@ const TokenBalance = ({
           ) : (
             <div className="ww-flex ww-space-x-2">
               <div className="ww-break-all ww-text-right ww-flex-wrap">
-                {viem.formatUnits(balance || 0n, token.decimals)}
+                {truncateDecimalPlaces(viem.formatUnits(balance || 0n, token.decimals))}
               </div>
               <div>{token.symbol}</div>
             </div>

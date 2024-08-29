@@ -38,6 +38,9 @@ import { WagmiWalletUiStore } from '@/store';
 import { LoaderIcon } from 'lucide-react';
 import TokenIcon from '@/components/TokenIcon';
 import { useTranslation } from '@/helpers/useTranslation';
+import { isValidBigNumberString } from '@/helpers/isValidBigNumberString';
+import { prepareStringToBigNumberParsing } from '@/helpers/prepareStringToBigNumberParsing';
+import { truncateDecimalPlaces } from '@/helpers/truncateDecimalPlaces';
 
 export function SendForm({ tokens }: { tokens: Token[] }) {
   const {
@@ -93,6 +96,7 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
   });
 
   const tokenAddress = form.watch('token');
+  const preparedAmount = prepareStringToBigNumberParsing(form.watch('amount'));
   const isNativeTransferSelected = tokenAddress === viem.zeroAddress;
   const selectedToken = tokens.find(token => token.address === tokenAddress);
 
@@ -103,6 +107,13 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
     args: [address!],
   });
 
+  const formattedTokenBalance = viem.formatUnits(
+    isNativeTransferSelected ? nativeTokenBalance?.value || 0n : tokenBalance || 0n,
+    isNativeTransferSelected
+      ? nativeTokenBalance?.decimals || 18
+      : selectedToken?.decimals || 18,
+  );
+
   const { data: transferSimulation, isLoading: isLoadingTransferSimulation } =
     useSimulateContract({
       abi: viem.erc20Abi,
@@ -110,9 +121,8 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
       functionName: 'transfer',
       args: [
         form.watch('targetAddress') as `0x${string}`,
-        viem.parseUnits(form.watch('amount'), selectedToken?.decimals || 18),
+        viem.parseUnits(preparedAmount, selectedToken?.decimals || 18),
       ],
-      type: 'eip1559',
       account: address!,
     });
   const { writeContractAsync: sendTokenAsync, isPending: isSendingErc20Token } =
@@ -124,7 +134,7 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
     error,
   } = usePrepareTransactionRequest({
     to: form.watch('targetAddress') as `0x${string}`,
-    value: viem.parseUnits(form.watch('amount'), selectedToken?.decimals || 18),
+    value: viem.parseUnits(preparedAmount, selectedToken?.decimals || 18),
   });
   const { sendTransactionAsync, isPending: isSendingNativeToken } = useSendTransaction();
 
@@ -170,11 +180,19 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
 
   useEffect(
     function setErrorOnFormForSmartAccounts() {
-      console.log;
+      if (isValidBigNumberString(form.watch('amount'))) {
+        form.clearErrors('amount');
+      } else {
+        form.setError('amount', {
+          message: t('INVALID_AMOUNT'),
+        });
+        return;
+      }
+
       if (isNativeTransferSelected) {
         const currentNativeTokenBalance = nativeTokenBalance?.value || 0n;
         const selectedAmount = viem.parseUnits(
-          form.watch('amount'),
+          preparedAmount,
           selectedToken?.decimals || 18,
         );
         if (
@@ -195,7 +213,7 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
         }
         const currentTokenBalance = tokenBalance || 0n;
         const selectedAmount = viem.parseUnits(
-          form.watch('amount'),
+          preparedAmount,
           selectedToken?.decimals || 18,
         );
         if (currentTokenBalance === 0n || selectedAmount > currentTokenBalance) {
@@ -211,11 +229,20 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
     [
       isNativeTransferSelected,
       form.watch('amount'),
+      preparedAmount,
       nativeTokenBalance?.value,
       selectedToken?.decimals,
       tokenBalance,
     ],
   );
+
+  const hasErrors = !!Object.keys(form.formState.errors).length || !!error;
+  const isSendButtonDisabled =
+    (isNativeTransferSelected
+      ? isLoadingTransactionRequest
+      : isLoadingTransferSimulation) ||
+    isSendingErc20Token ||
+    isSendingNativeToken;
 
   return (
     <Form {...form}>
@@ -274,22 +301,12 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
                 <Button
                   type="button"
                   variant="ghost"
-                  className="ww-ml-auto"
+                  className="ww-ml-auto ww-text-wrap ww-break-all ww-h-fit"
                   onClick={() => {
-                    form.setValue(
-                      'amount',
-                      viem.formatUnits(
-                        isNativeTransferSelected
-                          ? nativeTokenBalance?.value || 0n
-                          : tokenBalance || 0n,
-                        isNativeTransferSelected
-                          ? nativeTokenBalance?.decimals || 18
-                          : selectedToken?.decimals || 18,
-                      ),
-                    );
+                    form.setValue('amount', formattedTokenBalance);
                   }}
                 >
-                  {t('MAX')}
+                  {t('MAX')} {`(${truncateDecimalPlaces(formattedTokenBalance)})`}
                 </Button>
               </FormLabel>
               <FormControl>
@@ -303,19 +320,8 @@ export function SendForm({ tokens }: { tokens: Token[] }) {
           <div className="ww-w-full ww-text-destructive">
             {(error as any)?.cause?.shortMessage}
           </div>
-          <Button
-            disabled={
-              isSendingErc20Token ||
-              isSendingNativeToken ||
-              !!Object.keys(form.formState.errors).length
-            }
-            type="submit"
-          >
-            {((isNativeTransferSelected
-              ? isLoadingTransactionRequest
-              : isLoadingTransferSimulation) ||
-              isSendingErc20Token ||
-              isSendingNativeToken) && (
+          <Button disabled={isSendButtonDisabled || hasErrors} type="submit">
+            {isSendButtonDisabled && (
               <LoaderIcon className="ww-animate-spin ww-size-4 ww-mr-2" />
             )}
             {t('SEND')}

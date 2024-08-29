@@ -3,7 +3,7 @@ import { useTranslation } from '@/helpers/useTranslation';
 import { cn } from '@/lib/utils';
 import { WagmiWalletUiStore } from '@/store';
 import { Activity } from '@/types';
-import { ArrowDownLeftIcon, ArrowUpRightIcon, ComputerIcon } from 'lucide-react';
+import { ArrowDownLeftIcon, ArrowUpRightIcon, GitCompareArrowsIcon } from 'lucide-react';
 import { useContext } from 'react';
 import * as viem from 'viem';
 
@@ -23,7 +23,7 @@ const ActivityRow = ({ activity: a }: { activity: Activity }) => {
         ) : a.type === 'receive' ? (
           <ArrowDownLeftIcon className="ww-size-8 ww-m-2 ww-text-primary-foreground" />
         ) : (
-          <ComputerIcon className="ww-size-8 ww-m-2 ww-text-primary-foreground" />
+          <GitCompareArrowsIcon className="ww-size-8 ww-m-2 ww-text-primary-foreground" />
         )}
       </div>
       <div className="ww-ml-2 ww-flex ww-flex-col ww-truncate">

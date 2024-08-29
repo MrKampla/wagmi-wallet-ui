@@ -20,5 +20,9 @@
   "ACTIVITY": "Activity",
   "PENDING": "Pending",
   "SUCCESS": "Success",
-  "FAIL": "Failed"
+  "FAIL": "Failed",
+  "TOKEN_ALREADY_ADDED": "Token already added",
+  "ENTER_VALID_TOKEN_ADDRESS": "Enter a valid token address",
+  "ADDRESS_NOT_A_TOKEN": "Address is not a token",
+  "INVALID_AMOUNT": "Invalid amount"
 }

@@ -24,12 +24,13 @@ export type Activity = {
 };
 
 export type WagmiWalletUIState = {
+  tokens: Token[];
   isOpen?: boolean;
   withNativeToken?: boolean;
   nativeTokenImg?: React.ReactNode | string;
   customTokensStorageId?: string;
-  tokens: Token[];
   activities?: Activity[];
+  infoComponent?: ReactNode;
   // views
   setCurrentView: (view: 'wallet' | 'send' | 'add-token') => void;
   onCloseWalletUI?: () => void;
